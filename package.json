@@ -1,0 +1,23 @@
+{
+  "name": "scotus-servo",
+  "version": "0.0.0",
+  "description": "A node scraper and diff checker for SCOTUS opinions",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "law",
+    "unitedstates"
+  ],
+  "dependencies": {
+    "async":"*",
+    "cheerio":"*",
+    "crypto-js": "*",
+    "get":"*",
+    "underscore":"*",
+    "request": "*"
+  },
+  "author": "V. David Zvenyach",
+  "license": "MIT"
+}
