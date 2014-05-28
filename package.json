@@ -19,5 +19,9 @@
     "request": "*"
   },
   "author": "V. David Zvenyach",
+  "repository" :
+    { "type" : "git"
+    , "url" : "http://github.com/vzvenyach/scotus-servo.git"
+  },
   "license": "MIT"
 }
