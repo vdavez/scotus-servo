@@ -19,20 +19,22 @@ function start () {
 }
 
 function getOpinions (array, callback) {
-	request({headers: {"User-Agent":'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)'},url:"http://www.supremecourt.gov/opinions/slipopinions.aspx?Term=13"}, function (error, response, body) {
-  		if (!error && response.statusCode == 200) {
-    		var $ = cheerio.load(body); // Get the slip opinions.
-    		getTags(array, $, function() {
-    			callback()
-    		})
-  		}
-  		else {
-  			console.log("Something went wrong");
-  		}
+	_.each(["08","09","10","11","12","13"], function (year, index, years) {
+		request({headers: {"User-Agent":'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)'},url:"http://www.supremecourt.gov/opinions/slipopinions.aspx?Term=" + year}, function (error, response, body) {
+	  		if (!error && response.statusCode == 200) {
+	    		var $ = cheerio.load(body); // Get the slip opinions.
+	    		getTags(year, array, $, function() {
+	    			callback()
+	    		})
+	  		}
+	  		else {
+	  			console.log("Something went wrong");
+	  		}
+		})
 	})
 }
 
-function getTags (array, $, callback) {
+function getTags (year, array, $, callback) {
 	async.each($("a", ".datatables"), function (e, callback){
 		link = "http://www.supremecourt.gov/opinions/" + $(e).attr('href');
 		getHeaders(link, function (link, etag) {
@@ -43,7 +45,7 @@ function getTags (array, $, callback) {
 			else {
 				console.log("The etag is different, let's go ahead and download it")
 				array.push(etag)
-				dl(link)
+				dl(year, link)
 				callback()
 			}
 		})
@@ -62,8 +64,8 @@ function checkArray (etag, array) {
 	return _.contains(array, etag) 
 }
 
-function dl(link) {
-	get(link).toDisk("pdfs/" + path.basename(link), function (err) {
+function dl(year, link) {
+	get(link).toDisk("pdfs/" + year + "/" + path.basename(link), function (err) {
 		if (err) console.log(err);
 	})
 }
