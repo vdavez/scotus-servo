@@ -19,7 +19,7 @@ function start () {
 }
 
 function getOpinions (array, callback) {
-	request('http://www.supremecourt.gov/opinions/slipopinions.aspx?Term=13', function (error, response, body) {
+	request({headers: {"User-Agent":'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)'},url:"http://www.supremecourt.gov/opinions/slipopinions.aspx?Term=13"}, function (error, response, body) {
   		if (!error && response.statusCode == 200) {
     		var $ = cheerio.load(body); // Get the slip opinions.
     		getTags(array, $, function() {
