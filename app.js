@@ -42,7 +42,7 @@ function getTags (array, $, callback) {
 			}
 			else {
 				console.log("The etag is different, let's go ahead and download it")
-				etagsArray.push(etag)
+				array.push(etag)
 				dl(link)
 				callback()
 			}
