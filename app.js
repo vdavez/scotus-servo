@@ -39,11 +39,10 @@ function getTags (year, array, $, callback) {
 		link = "http://www.supremecourt.gov/opinions/" + $(e).attr('href');
 		getHeaders(link, function (link, etag) {
 			if (checkArray(etag, array)) {
-				console.log("The etag checks out, no need to do anything")
 				callback()
 			}
 			else {
-				console.log("The etag is different, let's go ahead and download it")
+				console.log("The etag is different, let's go ahead and download it: " + year + "/" + link)
 				array.push(etag)
 				dl(year, link)
 				callback()
