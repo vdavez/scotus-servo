@@ -16,6 +16,7 @@
     "crypto-js": "*",
     "get":"*",
     "underscore":"*",
+    "twitter":"*",
     "request": "*"
   },
   "author": "V. David Zvenyach",
