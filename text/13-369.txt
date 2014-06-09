@@ -453,9 +453,7 @@ tional requirement to remove EMG signals.” Ibid.
 We granted certiorari, 571 U. S. ___ (2014), and now
 vacate and remand.
 III
-
 A
-
 Although the parties here disagree on the dispositive
 question—does the ’753 patent withstand definiteness
 scrutiny—they are in accord on several aspects of the
@@ -483,12 +481,14 @@ Shoketsu Kinzoku Kogyo Kabushiki Co., 535 U. S. 722, 741
 (2002) (prosecution history). Third, “[d]efiniteness is
 measured from the viewpoint of a person skilled in [the]
 art at the time the patent was filed.” Brief for Respondent
-55 (emphasis added). See generally E. Manzo, Patent
-Claim Construction in the Federal Circuit §0.2, p. 9 (2014)
-(“Patent claims . . . should be construed from an objective
-perspective of a [skilled artisan], based on what the appli­
-cant actually claimed, disclosed, and stated during the
-application process.”).
+55 (emphasis added). See generally Sarnoff & Manzo, An
+Introduction to, Premises of, and Problems With Patent
+Claim Construction, in Patent Claim Construction in the
+Federal Circuit 9 (E. Manzo ed. 2014) (“Patent claims . . .
+should be construed from an objective perspective of a
+[skilled artisan], based on what the applicant actually
+claimed, disclosed, and stated during the application
+process.”).
 The parties differ, however, in their articulations of just
 how much imprecision §112, ¶2 tolerates. In Nautilus’
 view, a patent is invalid when a claim is “ambiguous, such
