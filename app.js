@@ -64,7 +64,7 @@ function checkArray (etag, array) {
 }
 
 function dl(year, link) {
-	get(link).toDisk("pdfs/" + year + "/" + path.basename(link), function (err) {
+	get(link).toDisk("pdfs/" + year + "/" + path.basename(link).split('_')[0] + '.pdf', function (err) {
 		if (err) console.log(err);
 	})
 }
