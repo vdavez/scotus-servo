@@ -31,7 +31,9 @@ function start (callback) {
 	})
 }
 
-function commitAll () {
+function commitAll (etagsArray) {
+	fs.writeFileSync("etags.json",JSON.stringify(etagsArray))
+	console.log("All Done!")
 	gitTweet(function () {
 		child_process.exec('git commit -am ' + Date.now(), function (err, stdout, stderr) {
 			console.log(stdout || stderr)
@@ -45,7 +47,7 @@ function getOpinions (array, callback) {
 	  		if (!error && response.statusCode == 200) {
 	    		var $ = cheerio.load(body); // Get the slip opinions.
 	    		getTags(year, array, $, function() {
-	    			(index != years.length - 1 ? callback() : commitAll())
+	    			(index != years.length - 1 ? callback() : commitAll(array))
 	    		})
 	  		}
 	  		else {
@@ -116,14 +118,8 @@ function tweet (name, status, callback) {
 	var changedOp = "Looks like SCOTUS has changed its opinion for No. " + path.basename(name,".pdf") + ". Link to latest opinion at http://code.esq.io/scotus-servo/" + name;
 	var tweetText = (status == 128 ? newOp : changedOp)
 
-	console.log(tweetText)
-	
-	T.get('followers/ids', { screen_name: 'SCOTUS_servo' },  function (err, data, response) {
+	T.post('statuses/update', { status: tweetText }, function(err, data, response) {
   		console.log(data)
 	})
 
-/*	T.post('statuses/update', { status: tweetText }, function(err, data, response) {
-  		console.log(data)
-	})
-*/
 }
