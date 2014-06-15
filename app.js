@@ -115,11 +115,13 @@ function gitTweet (callback) {
 
 function tweet (name, status, callback) {
 	var newOp = "SCOTUS has posted a new opinion. Download at http://code.esq.io/scotus-servo/" + name;
-	var changedOp = "Looks like SCOTUS has changed its opinion for No. " + path.basename(name,".pdf") + ". Link to latest opinion at http://code.esq.io/scotus-servo/" + name;
-	var tweetText = (status == 128 ? newOp : changedOp)
-
-	T.post('statuses/update', { status: tweetText }, function(err, data, response) {
-  		console.log(data)
+	
+	child_process.exec('git log -n 1 --pretty=format:%H -- ' + name, function (err, stdout, stderr) {
+		var oldLink = "https://raw.githubusercontent.com/vzvenyach/scotus-servo/" +stdout + "/" + name; 
+		var changedOp = "POSSIBLE CHANGE ALERT -- No. " + path.basename(name,".pdf") + ". Old version: " + oldLink + ". New version: http://code.esq.io/scotus-servo/" + name;
+		var tweetText = (status == 128 ? newOp : changedOp)
+		T.post('statuses/update', { status: tweetText }, function(err, data, response) {
+  			console.log(data)
+		})
 	})
-
 }
