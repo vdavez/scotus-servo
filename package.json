@@ -14,9 +14,11 @@
     "async":"*",
     "cheerio":"*",
     "crypto-js": "*",
+    "dotenv":"*",
     "get":"*",
+    "git-utils":"*",
     "underscore":"*",
-    "twitter":"*",
+    "twit":"*",
     "request": "*"
   },
   "author": "V. David Zvenyach",
