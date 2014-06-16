@@ -35,9 +35,10 @@ function commitAll (etagsArray) {
 	fs.writeFileSync("etags.json",JSON.stringify(etagsArray))
 	console.log("All Done!")
 	gitTweet(function () {
-		child_process.exec('git commit -am ' + Date.now(), function (err, stdout, stderr) {
-			console.log(stdout || stderr)
-		})
+//		child_process.exec('git commit -am ' + Date.now(), function (err, stdout, stderr) {
+//			console.log(stdout || stderr)
+//		})
+	console.log("Ready for action!");
 	})
 }
 
