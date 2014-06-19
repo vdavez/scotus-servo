@@ -25,30 +25,21 @@ start()
 function start (callback) {
 	var f = JSON.parse(fs.readFileSync("etags.json", encoding="utf-8"))
 	var etagsArray = f.map(function (tag, i, etags) {return tag.split(":")[0]})
-	getOpinions(etagsArray, function () {
-		fs.writeFileSync("etags.json",JSON.stringify(etagsArray))
-		console.log("All Done!")
-	})
+	getOpinions(etagsArray)
 }
 
 function commitAll (etagsArray) {
 	fs.writeFileSync("etags.json",JSON.stringify(etagsArray))
 	console.log("All Done!")
-	gitTweet(function () {
-//		child_process.exec('git commit -am ' + Date.now(), function (err, stdout, stderr) {
-//			console.log(stdout || stderr)
-//		})
-	console.log("Ready for action!");
-	})
 }
 
-function getOpinions (array, callback) {
+function getOpinions (array) {
 	_.each(["08","09","10","11","12","13"], function (year, index, years) {
 		request({headers: {"User-Agent":'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)'},url:"http://www.supremecourt.gov/opinions/slipopinions.aspx?Term=" + year}, function (error, response, body) {
 	  		if (!error && response.statusCode == 200) {
 	    		var $ = cheerio.load(body); // Get the slip opinions.
 	    		getTags(year, array, $, function() {
-	    			(index != years.length - 1 ? callback() : commitAll(array))
+	    			commitAll(array)
 	    		})
 	  		}
 	  		else {
@@ -58,7 +49,7 @@ function getOpinions (array, callback) {
 	})
 }
 
-function getTags (year, array, $, callback) {
+function getTags (year, array, $, next) {
 	async.each($("a", ".datatables"), function (e, callback){
 		link = "http://www.supremecourt.gov/opinions/" + $(e).attr('href');
 		getHeaders(link, function (link, etag) {
@@ -66,14 +57,15 @@ function getTags (year, array, $, callback) {
 				callback()
 			}
 			else {
-				console.log("The etag is different, let's go ahead and download it: " + year + "/" + link)
+				console.log("The etag is different, let's go ahead and download it: " + link)
 				array.push(etag)
-				dl(year, link)
-				callback()
+				dl(year, link, $(e).text(), function () { 
+					callback()
+				})
 			}
 		})
 	}, function (err) {
-		callback()
+		next()
 	})
 }
 
@@ -87,39 +79,30 @@ function checkArray (etag, array) {
 	return _.contains(array, etag) 
 }
 
-function dl(year, link) {
+function dl(year, link, op_name, callback) {
 	get(link).toDisk("pdfs/" + year + "/" + path.basename(link).split('_')[0] + '.pdf', function (err) {
 		if (err) console.log(err);
+		gitTweet(link, op_name, "pdfs/" + year + "/" + path.basename(link).split('_')[0] + '.pdf', callback)
 	})
 }
 
-function gitTweet (callback) {
+function gitTweet (link, op, fname, callback) {
 	var repository = git.open(__dirname)	//Open the repository
 	var statusObj = _.pairs(repository.getStatus());	// Get array of [file, status] in the repository.
-
-	// Go through each [file, status] 
-	_.each(statusObj, function (f) {
-
-		//If the file is changed and is in the pdfs directory
-		if (f[1] != 1 && f[0].substr(0,4) == "pdfs") {
-
-			//Shell out to add the file to git 
-			child_process.exec('git add ' + f[0], function (err, stdout, stderr) {
-				
-				// Tweet that the file has been added/changed
-				tweet(f[0],f[1])
-			})
-		}
+	tweet(link, fname, repository.getStatus()[fname], op)
+	child_process.exec('git add ' + fname, function (err, stdout, stderr) {		
+		callback()
 	})
-	callback()
 }
 
-function tweet (name, status, callback) {
-	var newOp = "SCOTUS has posted a new opinion. Download at http://code.esq.io/scotus-servo/" + name;
-	
+function tweet (link, name, status, op, callback) {
+	if (op.length > 45) {
+		op = op.substr(0,45) + "…"
+	}
+	var newOp = "SCOTUS has ruled in " + op + " " + link + " (Backup: http://code.esq.io/scotus-servo/" + name + ")";	
 	child_process.exec('git log -n 1 --pretty=format:%H -- ' + name, function (err, stdout, stderr) {
 		var oldLink = "https://raw.githubusercontent.com/vzvenyach/scotus-servo/" +stdout + "/" + name; 
-		var changedOp = "POSSIBLE CHANGE ALERT -- No. " + path.basename(name,".pdf") + ". Old version: " + oldLink + ". New version: http://code.esq.io/scotus-servo/" + name;
+		var changedOp = "POSSIBLE CHANGE ALERT in " + op + " (before " + oldLink + " & after http://code.esq.io/scotus-servo/" + name + ")";
 		var tweetText = (status == 128 ? newOp : changedOp)
 		T.post('statuses/update', { status: tweetText }, function(err, data, response) {
   			console.log(data)
