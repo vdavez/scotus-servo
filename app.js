@@ -96,6 +96,7 @@ function gitTweet (link, op, fname, callback) {
 }
 
 function tweet (link, name, status, op, callback) {
+	if (status == 1) return false;
 	if (op.length > 45) {
 		op = op.substr(0,45) + "…"
 	}
