@@ -71,7 +71,12 @@ function getTags (year, array, $, next) {
 
 function getHeaders (link, callback) {
 	request.head({method:"GET", url:link}, function (e,r,b) {
-		callback(link, r.headers.etag.split(":")[0].replace('"',""))
+		try {
+			callback(link, r.headers.etag.split(":")[0].replace('"',""))
+		}
+		catch {
+			callback(link, r.headers.etag)
+		}
 	})
 }
 
