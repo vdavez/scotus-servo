@@ -75,6 +75,7 @@ function getHeaders (link, callback) {
 			callback(link, r.headers.etag.split(":")[0].replace('"',""))
 		}
 		catch (err) {
+			console.log([link, err]);
 			callback(link, r.headers.etag)
 		}
 	})
