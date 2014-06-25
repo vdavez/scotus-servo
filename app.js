@@ -64,6 +64,9 @@ function getTags (year, array, $, next) {
 						callback()
 					})
 				}
+				else {
+					callback()
+				}
 			}
 		})
 	}, function (err) {
