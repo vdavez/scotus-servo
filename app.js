@@ -91,9 +91,10 @@ function checkArray (etag, array) {
 }
 
 function dl(year, link, op_name, callback) {
-	get(link).toDisk("pdfs/" + year + "/" + path.basename(link).split('_')[0] + '.pdf', function (err) {
+	var fname = "pdfs/" + year + "/" + path.basename(link, ".pdf").split('_')[0] + '.pdf'
+	get(link).toDisk(fname, function (err) {
 		if (err) console.log(err);
-		gitTweet(link, op_name, "pdfs/" + year + "/" + path.basename(link).split('_')[0] + '.pdf', callback)
+		gitTweet(link, op_name, fname, callback)
 	})
 }
 
