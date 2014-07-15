@@ -57,7 +57,7 @@ function getTags (year, array, $, next) {
 				callback()
 			}
 			else {
-				console.log("The etag is different, let's go ahead and download it: " + link)
+				console.log("The etag '" + etag + "' is different, let's go ahead and download it: " + link)
 				if (etag != null) {
 					array.push(etag)
 					dl(year, link, $(e).text(), function () { 
