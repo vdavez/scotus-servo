@@ -57,7 +57,7 @@ function getTags (year, array, $, next) {
 				callback()
 			}
 			else {
-				console.log("The etag '" + etag + "' is different, let's go ahead and download it: " + link)
+				console.log("The etag is different, let's go ahead and download it: " + link)
 				if (etag != null) {
 					array.push(etag)
 					dl(year, link, $(e).text(), function () { 
@@ -117,8 +117,30 @@ function tweet (link, name, status, op, callback) {
 		var oldLink = "https://raw.githubusercontent.com/vzvenyach/scotus-servo/" +stdout + "/" + name; 
 		var changedOp = "POSSIBLE CHANGE ALERT in " + op + " (before " + oldLink + " & after http://code.esq.io/scotus-servo/" + name + ")";
 		var tweetText = (status == 128 ? newOp : changedOp)
-		T.post('statuses/update', { status: tweetText }, function(err, data, response) {
-  			console.log(data)
+
+		// New Sanity Check before Tweeting
+		// Compare the file in the system with the previous file
+		compareHashes(name, stdout + " " + name, function (match) {
+			if (!match) {
+				T.post('statuses/update', { status: tweetText }, function(err, data, response) {
+		  			console.log(data)
+				})
+			}
+			else if (match) {
+				console.log("This is a false positive! Very naughty Supreme Court: " + name)
+			}
+		})
+	})
+}
+
+function compareHashes(opn_1, opn_2, callback) {
+	child_process.exec('git hash-object ' + opn_1, function (err, stdout, stderr) {
+		var hash1 = stdout.trim();
+		child_process.exec('git ls-tree ' + opn_2, function (e, so, se) {
+			hash2 = so.split(/\t/)[0].split(/\s/)[2].trim()
+	 		console.log([hash1, hash2])
+			if (hash1 == hash2) {callback(true)}
+			else{callback(false)}
 		})
 	})
 }
