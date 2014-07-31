@@ -43,7 +43,7 @@ function getOpinions (array) {
 	    		})
 	  		}
 	  		else {
-	  			console.log("Something went wrong");
+	  			console.log("Something went wrong & " + error + ", " + response.statusCode);
 	  		}
 		})
 	})
