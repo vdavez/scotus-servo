@@ -35,7 +35,7 @@ function commitAll (etagsArray) {
 
 function getOpinions (array) {
 	_.each(["08","09","10","11","12","13"], function (year, index, years) {
-		request({headers: {"User-Agent":'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)'},url:"http://www.supremecourt.gov/opinions/slipopinions.aspx?Term=" + year}, function (error, response, body) {
+		request({headers: {"User-Agent":'scotus_servo'},url:"http://www.supremecourt.gov/opinions/slipopinions.aspx?Term=" + year}, function (error, response, body) {
 	  		if (!error && response.statusCode == 200) {
 	    		var $ = cheerio.load(body); // Get the slip opinions.
 	    		getTags(year, array, $, function() {
