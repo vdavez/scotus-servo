@@ -124,9 +124,9 @@ function tweet (link, name, status, op, callback) {
 		// Compare the file in the system with the previous file
 		compareHashes(name, stdout + " " + name, function (match) {
 			if (!match) {
-				// T.post('statuses/update', { status: tweetText }, function(err, data, response) {
-		  // 			console.log(data)
-				// })
+				T.post('statuses/update', { status: tweetText }, function(err, data, response) {
+		  			console.log(data)
+				})
 			}
 			else if (match) {
 				console.log("This is a false positive! Very naughty Supreme Court: " + name)
