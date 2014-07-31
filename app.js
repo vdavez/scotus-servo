@@ -35,17 +35,19 @@ function commitAll (etagsArray) {
 
 function getOpinions (array) {
 	_.each(["08","09","10","11","12","13"], function (year, index, years) {
-		request({headers: {"User-Agent":'scotus_servo'},url:"http://www.supremecourt.gov/opinions/slipopinions.aspx?Term=" + year}, function (error, response, body) {
-	  		if (!error && response.statusCode == 200) {
-	    		var $ = cheerio.load(body); // Get the slip opinions.
-	    		getTags(year, array, $, function() {
-	    			commitAll(array)
-	    		})
-	  		}
-	  		else {
-	  			console.log("Something went wrong");
-	  		}
-		})
+		setTimeout(function () {
+			request({headers: {"User-Agent":'scotus_servo (https://github.com/vzvenyach/scotus-servo)'},url:"http://www.supremecourt.gov/opinions/slipopinions.aspx?Term=" + year}, function (error, response, body) {
+		  		if (!error && response.statusCode == 200) {
+		    		var $ = cheerio.load(body); // Get the slip opinions.
+		    		getTags(year, array, $, function() {
+		    			commitAll(array)
+		    		})
+		  		}
+		  		else {
+		  			console.log("Something went wrong");
+		  		}
+			})
+		}, 1000 * index);	// added 
 	})
 }
 
@@ -75,7 +77,7 @@ function getTags (year, array, $, next) {
 }
 
 function getHeaders (link, callback) {
-	request.head({method:"GET", url:link}, function (e,r,b) {
+	request.head({url:link}, function (e,r,b) {
 		try {
 			callback(link, r.headers.etag.split(":")[0].replace('"',""))
 		}
@@ -122,9 +124,9 @@ function tweet (link, name, status, op, callback) {
 		// Compare the file in the system with the previous file
 		compareHashes(name, stdout + " " + name, function (match) {
 			if (!match) {
-				T.post('statuses/update', { status: tweetText }, function(err, data, response) {
-		  			console.log(data)
-				})
+				// T.post('statuses/update', { status: tweetText }, function(err, data, response) {
+		  // 			console.log(data)
+				// })
 			}
 			else if (match) {
 				console.log("This is a false positive! Very naughty Supreme Court: " + name)
