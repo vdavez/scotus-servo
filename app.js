@@ -54,27 +54,23 @@ function getOpinions (array) {
 function getTags (year, array, $, next) {
 	async.each($("a", ".datatables"), function (e, callback){
 		link = "http://www.supremecourt.gov/opinions/" + $(e).attr('href');
-		setTimeout(function () {
-
-
-			getHeaders(link, function (link, etag) {
-				if (checkArray(etag, array)) {
-					callback()
+		getHeaders(link, function (link, etag) {
+			if (checkArray(etag, array)) {
+				setTimeout(callback,1000)
+			}
+			else {
+				console.log("The etag is different, let's go ahead and download it: " + link)
+				if (etag != null) {
+					array.push(etag)
+					dl(year, link, $(e).text(), function () { 
+						setTimeout(callback,1000)
+					})
 				}
 				else {
-					console.log("The etag is different, let's go ahead and download it: " + link)
-					if (etag != null) {
-						array.push(etag)
-						dl(year, link, $(e).text(), function () { 
-							callback()
-						})
-					}
-					else {
-						callback()
-					}
+					setTimeout(callback,1000)
 				}
-			})
-		}, 1000)
+			}
+		})
 	}, function (err) {
 		next()
 	})
