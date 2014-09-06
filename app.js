@@ -77,7 +77,7 @@ function getTags (year, array, $, next) {
 }
 
 function getHeaders (link, callback) {
-	setTimeout(function () {
+	// setTimeout(function () {
 		request.head({url:link}, function (e,r,b) {
 			try {
 				callback(link, r.headers.etag.split(":")[0].replace('"',""))
@@ -87,7 +87,7 @@ function getHeaders (link, callback) {
 				callback(link, r.headers.etag)
 			}
 		})
-	}, 1000);
+	// }, 1000);
 }
 
 function checkArray (etag, array) {
