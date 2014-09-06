@@ -52,7 +52,7 @@ function getOpinions (array) {
 }
 
 function getTags (year, array, $, next) {
-	async.each($("a", ".datatables"), function (e, callback){
+	async.eachSeries($("a", ".datatables"), function (e, callback){
 		link = "http://www.supremecourt.gov/opinions/" + $(e).attr('href');
 		getHeaders(link, function (link, etag) {
 			if (checkArray(etag, array)) {
