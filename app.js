@@ -144,10 +144,14 @@ function compareHashes(opn_1, opn_2, callback) {
 	child_process.exec('git hash-object ' + opn_1, function (err, stdout, stderr) {
 		var hash1 = stdout.trim();
 		child_process.exec('git ls-tree ' + opn_2, function (e, so, se) {
-			hash2 = so.split(/\t/)[0].split(/\s/)[2].trim()
-	 		console.log([hash1, hash2])
-			if (hash1 == hash2) {callback(true)}
-			else{callback(false)}
+			try {
+				hash2 = so.split(/\t/)[0].split(/\s/)[2].trim()
+		 		console.log([hash1, hash2])
+				if (hash1 == hash2) {callback(true)}
+				else{callback(false)}
+			} catch (err) {
+				callback(false)
+			}
 		})
 	})
 }
