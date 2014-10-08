@@ -129,9 +129,9 @@ function tweet (link, name, status, op, callback) {
 		compareHashes(name, stdout + " " + name, function (match) {
 			if (!match) {
 				console.log(tweetText)
-//				T.post('statuses/update', { status: tweetText }, function(err, data, response) {
-//		  			console.log(data)
-//				})
+				T.post('statuses/update', { status: tweetText }, function(err, data, response) {
+		  			console.log(data)
+				})
 			}
 			else if (match) {
 				console.log("This is a false positive! Very naughty Supreme Court: " + name)
