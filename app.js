@@ -1,6 +1,8 @@
-// 
+// Load environmental variables
 var dotenv = require('dotenv');
 dotenv.load();
+
+var argv = require('minimist')(process.argv.slice(2)); // use minimist to access the years
 
 var request = require('request');
 var cheerio = require('cheerio');
@@ -34,9 +36,9 @@ function commitAll (etagsArray) {
 }
 
 function getOpinions (array) {
-	_.each(["08","09","10","11","12","13"], function (year, index, years) {
+	_.each(argv._, function (year, index, years) {
 		setTimeout(function () {
-			request({headers: {"User-Agent":'scotus_servo (https://github.com/vzvenyach/scotus-servo)'},url:"http://www.supremecourt.gov/opinions/slipopinions.aspx?Term=" + year}, function (error, response, body) {
+			request({headers: {"User-Agent":'scotus_servo (https://github.com/vzvenyach/scotus-servo)'},url:"http://www.supremecourt.gov/opinions/slipopinion/" + year}, function (error, response, body) {
 		  		if (!error && response.statusCode == 200) {
 		    		var $ = cheerio.load(body); // Get the slip opinions.
 		    		getTags(year, array, $, function() {
@@ -52,8 +54,8 @@ function getOpinions (array) {
 }
 
 function getTags (year, array, $, next) {
-	async.eachSeries($("a", ".datatables"), function (e, callback){
-		link = "http://www.supremecourt.gov/opinions/" + $(e).attr('href');
+	async.eachSeries($("a", ".table-bordered"), function (e, callback){
+		link = "http://www.supremecourt.gov" + $(e).attr('href');
 		getHeaders(link, function (link, etag) {
 			if (checkArray(etag, array)) {
 				setTimeout(callback,1000)
@@ -126,9 +128,10 @@ function tweet (link, name, status, op, callback) {
 		// Compare the file in the system with the previous file
 		compareHashes(name, stdout + " " + name, function (match) {
 			if (!match) {
-				T.post('statuses/update', { status: tweetText }, function(err, data, response) {
-		  			console.log(data)
-				})
+				console.log(tweetText)
+//				T.post('statuses/update', { status: tweetText }, function(err, data, response) {
+//		  			console.log(data)
+//				})
 			}
 			else if (match) {
 				console.log("This is a false positive! Very naughty Supreme Court: " + name)

@@ -19,7 +19,8 @@
     "git-utils":"*",
     "underscore":"*",
     "twit":"*",
-    "request": "*"
+    "request": "*",
+    "minimist":"*"
   },
   "author": "V. David Zvenyach",
   "repository" :
