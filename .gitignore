@@ -2,3 +2,4 @@ node_modules/
 npm-debug.log
 log.txt
 .env
+.DS_Store
